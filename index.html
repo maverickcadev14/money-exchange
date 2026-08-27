@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Compare direct TWD to THB with a two-step TWD to USD to THB exchange route." />
+    <title>Money Exchange — TWD to THB Routes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="#" aria-label="Money Exchange home"><span class="brand-mark">M</span><span>MONEY EXCHANGE</span></a>
+        <div class="header-meta">
+          <p class="developer-credit">Develop by Maverick</p>
+          <div id="liveBadge" class="live-badge"><span></span> Live market data</div>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <p class="eyebrow">TWD <span>→</span> THB ROUTE PLANNER</p>
+          <h1>TWD Money Exchange<br /><em>Calculator</em></h1>
+          <p class="hero-copy">Enter Taiwan dollars once. Compare a direct cash exchange with a two-step USD route using Mega Bank and SuperRich rates.</p>
+        </section>
+
+        <section class="converter" aria-labelledby="converter-heading">
+          <div class="converter-topline">
+            <div><p class="section-label">YOUR STARTING AMOUNT</p><h2 id="converter-heading">How much TWD will you exchange?</h2></div>
+            <button id="refreshButton" class="refresh-button" type="button" aria-label="Refresh live exchange rates">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5"/></svg>
+              Refresh rates
+            </button>
+          </div>
+          <label class="money-field amount-field">
+            <span>Taiwan dollar amount</span>
+            <div class="input-row"><input id="amountInput" type="number" min="0" step="1" inputmode="numeric" value="30000" aria-label="TWD amount to exchange" /><div class="currency-chip">🇹🇼 TWD</div></div>
+          </label>
+          <div class="rate-summary">
+            <div><span class="status-dot"></span><p><strong>Two exchange routes</strong><small id="updatedLine">Connecting to Mega Bank and SuperRich…</small></p></div>
+            <p class="formula-note">Withdrawal fee shown separately</p>
+          </div>
+        </section>
+
+        <section class="results-panel" aria-labelledby="results-heading" aria-live="polite">
+          <div class="panel-heading"><div><p class="section-label">ROUTE COMPARISON</p><h2 id="results-heading">Your calculated results</h2></div></div>
+          <div class="route-grid">
+            <article class="route-card route-direct">
+              <div class="route-topline"><span class="route-number">01</span><span class="route-tag">DIRECT</span></div>
+              <p class="route-path">🇹🇼 TWD <span>→</span> 🇹🇭 THB</p>
+              <p class="route-description">Exchange TWD cash directly at SuperRich.</p>
+              <div class="primary-result"><span>THB received</span><strong id="directThbResult">—</strong><small>THB</small></div>
+              <p class="calculation-line" id="directFormula">—</p>
+            </article>
+            <article class="route-card route-two-step">
+              <div class="route-topline"><span class="route-number">02</span><span class="route-tag">2 STEPS</span></div>
+              <p class="route-path">🇹🇼 TWD <span>→</span> 🇺🇸 USD <span>→</span> 🇹🇭 THB</p>
+              <p class="route-description">Buy USD at Mega Bank, withdraw cash, then sell USD 100 notes at SuperRich.</p>
+              <div class="step-results">
+                <div class="step-result"><span><b>1</b> USD received · rounded down to 100</span><p><strong id="usdReceived">—</strong> <small>USD</small></p></div>
+                <div class="step-result fee-result"><span><b>2</b> USD cash withdrawal fee</span><p><strong id="withdrawalFee">—</strong> <small>TWD</small></p></div>
+                <div class="step-result final-result"><span><b>3</b> Net THB after withdrawal fee</span><p><strong id="twoStepThbResult">—</strong> <small>THB</small></p></div>
+              </div>
+              <p class="calculation-line" id="twoStepFormula">—</p>
+            </article>
+          </div>
+          <div class="difference-summary">
+            <div><span class="difference-label">TWO-STEP ROUTE DIFFERENCE</span><p id="differenceMessage">—</p></div>
+            <div class="difference-values"><p><strong id="thbDifference">—</strong><small>THB</small></p><span class="difference-divider"></span><p><strong id="percentageDifference">—</strong><small>vs direct</small></p></div>
+          </div>
+          <p class="disclaimer"><span>i</span> The fee is 100 TWD for every started 900 USD block. It is converted to THB using the SuperRich TWD buying rate and deducted from the final two-step result.</p>
+        </section>
+
+        <section class="rate-panel" aria-labelledby="rates-heading">
+          <div class="panel-heading"><div><p class="section-label">SOURCE RATES</p><h2 id="rates-heading">Rates used in this calculation</h2></div></div>
+          <div class="rate-grid">
+            <article class="rate-card"><div class="flag">🇹🇼</div><div><p>Mega Bank</p><span>USD · 即期銀行賣出</span></div><strong id="megaUsdRate">—</strong><small>TWD</small></article>
+            <article class="rate-card"><div class="flag">🇺🇸</div><div><p>SuperRich USD</p><span>100 denomination · buying</span></div><strong id="usdRate">—</strong><small>THB</small></article>
+            <article class="rate-card"><div class="flag">🇹🇼</div><div><p>SuperRich TWD</p><span>2,000–100 · buying</span></div><strong id="twdRate">—</strong><small>THB</small></article>
+          </div>
+          <div class="source-links"><a href="https://www.megabank.com.tw/personal/savings/foreign-service/forex" target="_blank" rel="noreferrer">Mega Bank source ↗</a><a href="https://www.superrichthailand.com/#!/en/exchange" target="_blank" rel="noreferrer">SuperRich source ↗</a></div>
+        </section>
+      </main>
+
+      <footer><p>Built for clear, quick currency checks.</p><p>Rates attributed to <a href="https://www.megabank.com.tw/personal/savings/foreign-service/forex" target="_blank" rel="noreferrer">Mega Bank</a> &amp; <a href="https://www.superrichthailand.com/#!/en/exchange" target="_blank" rel="noreferrer">SuperRich Thailand</a></p></footer>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
