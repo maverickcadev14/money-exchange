@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Compare direct TWD to THB with a two-step TWD to USD to THB exchange route." />
+    <meta name="description" content="Compare direct TWD to THB, SuperRich USD cash, and Dime! USD transfer exchange routes." />
     <title>Money Exchange — TWD to THB Routes</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,7 +24,7 @@
         <section class="hero">
           <p class="eyebrow">TWD <span>→</span> THB ROUTE PLANNER</p>
           <h1>TWD Money Exchange<br /><em>Calculator</em></h1>
-          <p class="hero-copy">Enter Taiwan dollars once. Compare a direct cash exchange with a two-step USD route using Mega Bank and SuperRich rates.</p>
+          <p class="hero-copy">Enter Taiwan dollars once. Compare direct exchange, a SuperRich USD cash route, and a Dime! USD transfer route.</p>
         </section>
 
         <section class="converter" aria-labelledby="converter-heading">
@@ -37,11 +37,16 @@
           </div>
           <label class="money-field amount-field">
             <span>Taiwan dollar amount</span>
-            <div class="input-row"><input id="amountInput" type="number" min="0" step="1" inputmode="numeric" value="30000" aria-label="TWD amount to exchange" /><div class="currency-chip">🇹🇼 TWD</div></div>
+            <div class="input-row"><input id="amountInput" type="number" min="0" step="1" inputmode="numeric" value="0" aria-label="TWD amount to exchange" /><div class="currency-chip">🇹🇼 TWD</div></div>
+          </label>
+          <label class="money-field dime-rate-field">
+            <span>Dime! USD exchange rate</span>
+            <div class="input-row rate-input-row"><input id="dimeRateInput" type="number" min="0" step="0.0001" inputmode="decimal" value="0" placeholder="Enter rate" aria-label="Dime USD to THB exchange rate" /><div class="currency-chip">🇹🇭 THB / USD</div></div>
+            <small>Enter how many Thai baht Dime! gives for 1 USD.</small>
           </label>
           <div class="rate-summary">
-            <div><span class="status-dot"></span><p><strong>Two exchange routes</strong><small id="updatedLine">Connecting to Mega Bank and SuperRich…</small></p></div>
-            <p class="formula-note">Withdrawal fee shown separately</p>
+            <div><span class="status-dot"></span><p><strong>Three exchange routes</strong><small id="updatedLine">Connecting to Mega Bank and SuperRich…</small></p></div>
+            <p class="formula-note">All route fees shown separately</p>
           </div>
         </section>
 
@@ -56,7 +61,7 @@
               <p class="calculation-line" id="directFormula">—</p>
             </article>
             <article class="route-card route-two-step">
-              <div class="route-topline"><span class="route-number">02</span><span class="route-tag">2 STEPS</span></div>
+              <div class="route-topline"><span class="route-number">02</span><span class="route-tag">Mega Bank ATM USD Cash Withdrawal</span></div>
               <p class="route-path">🇹🇼 TWD <span>→</span> 🇺🇸 USD <span>→</span> 🇹🇭 THB</p>
               <p class="route-description">Buy USD at Mega Bank, withdraw cash, then sell USD 100 notes at SuperRich.</p>
               <div class="step-results">
@@ -66,12 +71,31 @@
               </div>
               <p class="calculation-line" id="twoStepFormula">—</p>
             </article>
+            <article class="route-card route-dime">
+              <div class="route-topline"><span class="route-number">03</span><span class="route-tag">DIME!</span></div>
+              <p class="route-path">🇹🇼 TWD <span>→</span> 🇺🇸 USD <span>→</span> 🇹🇭 THB</p>
+              <p class="route-description">Buy USD at Mega Bank, transfer to Dime!, then convert using your entered rate.</p>
+              <div class="step-results dime-step-results">
+                <div class="step-result"><span><b>1</b> USD transferred · rounded to 100</span><p><strong id="dimeUsdReceived">—</strong> <small>USD</small></p></div>
+                <div class="step-result fee-result"><span><b>2</b> Mega Bank transfer fee</span><p><strong id="megaTransferFee">—</strong> <small>USD</small></p></div>
+                <div class="step-result fee-result"><span><b>3</b> Dime! transaction fee <small id="dimeTransactionFormula">—</small></span><p><strong id="dimeTransactionFee">—</strong> <small>USD</small></p></div>
+                <div class="step-result fee-result"><span><b>4</b> Dime! FCD receiving fee</span><p><strong id="dimeFcdFee">—</strong> <small>THB</small></p></div>
+                <div class="fee-total"><span>Total USD fees</span><strong><span id="dimeUsdFeesTotal">—</span> USD</strong></div>
+                <div class="step-result final-result"><span><b>5</b> Net THB after all fees</span><p><strong id="dimeThbResult">—</strong> <small>THB</small></p></div>
+              </div>
+              <p class="calculation-line" id="dimeFormula">—</p>
+            </article>
           </div>
           <div class="difference-summary">
-            <div><span class="difference-label">TWO-STEP ROUTE DIFFERENCE</span><p id="differenceMessage">—</p></div>
+            <div><span class="difference-label">MEGA BANK ATM USD CASH WITHDRAWAL ROUTE DIFFERENCE</span><p id="differenceMessage">—</p></div>
             <div class="difference-values"><p><strong id="thbDifference">—</strong><small>THB</small></p><span class="difference-divider"></span><p><strong id="percentageDifference">—</strong><small>vs direct</small></p></div>
           </div>
-          <p class="disclaimer"><span>i</span> The fee is 100 TWD for every started 900 USD block. It is converted to THB using the SuperRich TWD buying rate and deducted from the final two-step result.</p>
+          <div class="difference-summary dime-difference-summary">
+            <div><span class="difference-label">DIME! ROUTE DIFFERENCE</span><p id="dimeDifferenceMessage">—</p></div>
+            <div class="difference-values"><p><strong id="dimeThbDifference">—</strong><small>THB</small></p><span class="difference-divider"></span><p><strong id="dimePercentageDifference">—</strong><small>vs option 2</small></p></div>
+          </div>
+          <p class="disclaimer"><span>i</span> SuperRich route: 100 TWD for every started 900 USD block, converted with the SuperRich TWD buying rate.</p>
+          <p class="disclaimer dime-disclaimer"><span>i</span> Dime! route: 9.46 USD Mega Bank fee, plus 9 USD below 4,000 USD or 16 USD from 4,000 USD, plus another 15 USD, then a 500 THB FCD receiving fee.</p>
         </section>
 
         <section class="rate-panel" aria-labelledby="rates-heading">
