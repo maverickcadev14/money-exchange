@@ -1,0 +1,17 @@
+{
+  "name": "TWD Money Exchange Calculator",
+  "short_name": "Money Exchange",
+  "description": "Compare TWD to THB exchange routes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f8f5",
+  "theme_color": "#118c4f",
+  "icons": [
+    {
+      "src": "assets/money-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
