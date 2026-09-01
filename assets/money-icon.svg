@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-labelledby="title description">
+  <title id="title">Money Exchange</title>
+  <desc id="description">A white baht symbol on a green money icon</desc>
+  <rect width="180" height="180" fill="#118c4f"/>
+  <circle cx="90" cy="90" r="62" fill="#0b6f3e" stroke="#79d9a4" stroke-width="7"/>
+  <path d="M74 44v92M58 63h43c15 0 25 8 25 20 0 11-8 19-22 21H58m16-40v58h33c14 0 24-8 24-20 0-13-10-21-27-21H74" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
