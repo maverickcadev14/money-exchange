@@ -7,6 +7,7 @@ const HOST = process.env.HOST || '0.0.0.0';
 const ROOT = __dirname;
 const SUPER_RICH_URL = 'https://www.superrichthailand.com/';
 const MEGA_BANK_URL = 'https://www.megabank.com.tw/api/client/ExchangeRate/GetRateData?sc_lang=zh-TW&sc_site=bank-zh-tw&dic_lang=zh-TW';
+const DIME_RATE_MULTIPLIER = 1.00061;
 
 const contentTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -53,6 +54,7 @@ async function serveRates(response) {
     const twdBuying = Number(twdMatch?.[1]);
     const megaUsd = megaBankPayload?.rates?.find((rate) => String(rate.currKey).startsWith('USD|'));
     const megaUsdSpotSell = Number(megaUsd?.spot?.ask);
+    const dimeUsdRate = usdBuying * DIME_RATE_MULTIPLIER;
 
     if (!Number.isFinite(usdBuying) || !Number.isFinite(twdBuying) || !Number.isFinite(megaUsdSpotSell)) {
       throw new Error('One or more required exchange rates are missing');
@@ -62,8 +64,10 @@ async function serveRates(response) {
       usdBuying,
       twdBuying,
       megaUsdSpotSell,
+      dimeUsdRate,
       superRichUpdatedAt: updatedMatch ? `${updatedMatch[1]} ${updatedMatch[2]}` : 'Current official page',
       megaBankUpdatedAt: megaBankPayload.updateTime,
+      isFullyLive: true,
       branch: 'Headquarter Rajdamri 1'
     });
   } catch (error) {

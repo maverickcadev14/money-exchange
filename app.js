@@ -2,8 +2,10 @@ const FALLBACK_RATES = {
   usdBuying: 32.8,
   twdBuying: 1.0,
   megaUsdSpotSell: 31.73,
+  dimeUsdRate: 32.820008,
   superRichUpdatedAt: '2026-08-28T17:57:00+07:00',
   megaBankUpdatedAt: '2026/08/27 17:18:11',
+  isFullyLive: false,
   branch: 'Headquarter Rajdamri 1'
 };
 
@@ -19,12 +21,12 @@ const DIME_FCD_RECEIVING_FEE_THB = 500;
 
 const state = {
   rates: { ...FALLBACK_RATES },
-  isLive: false
+  isLive: false,
+  isFullyLive: false
 };
 
 const elements = {
   amount: document.querySelector('#amountInput'),
-  dimeRate: document.querySelector('#dimeRateInput'),
   directThb: document.querySelector('#directThbResult'),
   usdReceived: document.querySelector('#usdReceived'),
   withdrawalFee: document.querySelector('#withdrawalFee'),
@@ -49,6 +51,7 @@ const elements = {
   megaUsdRate: document.querySelector('#megaUsdRate'),
   usdRate: document.querySelector('#usdRate'),
   twdRate: document.querySelector('#twdRate'),
+  dimeUsdRate: document.querySelector('#dimeUsdRate'),
   refresh: document.querySelector('#refreshButton'),
   liveBadge: document.querySelector('#liveBadge')
 };
@@ -60,7 +63,7 @@ function formatNumber(value, maximumFractionDigits = 2) {
   }).format(value);
 }
 
-function calculate(amount, dimeRate) {
+function calculate(amount) {
   const directThb = amount * state.rates.twdBuying;
   const usdReceived = Math.floor((amount / state.rates.megaUsdSpotSell) / USD_DENOMINATION) * USD_DENOMINATION;
   const withdrawalFee = usdReceived > 0
@@ -81,7 +84,7 @@ function calculate(amount, dimeRate) {
   const dimeUsdFeesTotal = megaTransferFee + dimeTransactionFee;
   const dimeFcdFee = usdReceived > 0 ? DIME_FCD_RECEIVING_FEE_THB : 0;
   const dimeNetUsd = Math.max(0, usdReceived - dimeUsdFeesTotal);
-  const dimeThb = dimeRate > 0 ? Math.max(0, (dimeNetUsd * dimeRate) - dimeFcdFee) : 0;
+  const dimeThb = Math.max(0, (dimeNetUsd * state.rates.dimeUsdRate) - dimeFcdFee);
   const dimeThbDifference = dimeThb - twoStepThb;
   const dimePercentageDifference = twoStepThb > 0 ? (dimeThbDifference / twoStepThb) * 100 : 0;
 
@@ -109,8 +112,7 @@ function calculate(amount, dimeRate) {
 
 function render() {
   const amount = Math.max(0, Number(elements.amount.value) || 0);
-  const dimeRate = Math.max(0, Number(elements.dimeRate.value) || 0);
-  const result = calculate(amount, dimeRate);
+  const result = calculate(amount);
 
   elements.directThb.textContent = formatNumber(result.directThb);
   elements.usdReceived.textContent = formatNumber(result.usdReceived, 0);
@@ -124,7 +126,7 @@ function render() {
     : 'No transfer';
   elements.dimeFcdFee.textContent = formatNumber(result.dimeFcdFee, 0);
   elements.dimeUsdFeesTotal.textContent = formatNumber(result.dimeUsdFeesTotal, 2);
-  elements.dimeThb.textContent = dimeRate > 0 ? formatNumber(result.dimeThb) : '—';
+  elements.dimeThb.textContent = formatNumber(result.dimeThb);
 
   const differenceSign = result.thbDifference > 0 ? '+' : result.thbDifference < 0 ? '−' : '';
   const percentageSign = result.percentageDifference > 0 ? '+' : result.percentageDifference < 0 ? '−' : '';
@@ -140,40 +142,33 @@ function render() {
       ? 'The direct route returns more THB.'
       : 'Both routes return the same THB.';
 
-  if (dimeRate > 0) {
-    const dimeDifferenceSign = result.dimeThbDifference > 0 ? '+' : result.dimeThbDifference < 0 ? '−' : '';
-    const dimePercentageSign = result.dimePercentageDifference > 0 ? '+' : result.dimePercentageDifference < 0 ? '−' : '';
-    elements.dimeThbDifference.textContent = `${dimeDifferenceSign}${formatNumber(Math.abs(result.dimeThbDifference))}`;
-    elements.dimePercentageDifference.textContent = `${dimePercentageSign}${formatNumber(Math.abs(result.dimePercentageDifference), 2)}%`;
-    elements.dimeThbDifference.classList.toggle('positive', result.dimeThbDifference > 0);
-    elements.dimeThbDifference.classList.toggle('negative', result.dimeThbDifference < 0);
-    elements.dimePercentageDifference.classList.toggle('positive', result.dimePercentageDifference > 0);
-    elements.dimePercentageDifference.classList.toggle('negative', result.dimePercentageDifference < 0);
-    elements.dimeDifferenceMessage.textContent = result.dimeThbDifference > 0
-      ? 'The Dime! route returns more THB than option 2.'
-      : result.dimeThbDifference < 0
-        ? 'Option 2 returns more THB than the Dime! route.'
-        : 'Options 2 and 3 return the same THB.';
-  } else {
-    elements.dimeThbDifference.textContent = '—';
-    elements.dimePercentageDifference.textContent = '—';
-    elements.dimeThbDifference.classList.remove('positive', 'negative');
-    elements.dimePercentageDifference.classList.remove('positive', 'negative');
-    elements.dimeDifferenceMessage.textContent = 'Enter the Dime! USD rate to compare options 2 and 3.';
-  }
+  const dimeDifferenceSign = result.dimeThbDifference > 0 ? '+' : result.dimeThbDifference < 0 ? '−' : '';
+  const dimePercentageSign = result.dimePercentageDifference > 0 ? '+' : result.dimePercentageDifference < 0 ? '−' : '';
+  elements.dimeThbDifference.textContent = `${dimeDifferenceSign}${formatNumber(Math.abs(result.dimeThbDifference))}`;
+  elements.dimePercentageDifference.textContent = `${dimePercentageSign}${formatNumber(Math.abs(result.dimePercentageDifference), 2)}%`;
+  elements.dimeThbDifference.classList.toggle('positive', result.dimeThbDifference > 0);
+  elements.dimeThbDifference.classList.toggle('negative', result.dimeThbDifference < 0);
+  elements.dimePercentageDifference.classList.toggle('positive', result.dimePercentageDifference > 0);
+  elements.dimePercentageDifference.classList.toggle('negative', result.dimePercentageDifference < 0);
+  elements.dimeDifferenceMessage.textContent = result.dimeThbDifference > 0
+    ? 'The Dime! route returns more THB than option 2.'
+    : result.dimeThbDifference < 0
+      ? 'Option 2 returns more THB than the Dime! route.'
+      : 'Options 2 and 3 return the same THB.';
 
   elements.directFormula.textContent = `${formatNumber(amount)} TWD × ${state.rates.twdBuying.toFixed(3)} = ${formatNumber(result.directThb)} THB`;
   elements.twoStepFormula.textContent = `(${formatNumber(result.usdReceived, 0)} USD × ${state.rates.usdBuying.toFixed(2)}) − (${formatNumber(result.withdrawalFee, 0)} TWD × ${state.rates.twdBuying.toFixed(3)}) = ${formatNumber(result.twoStepThb)} THB`;
-  elements.dimeFormula.textContent = dimeRate > 0
-    ? `(${formatNumber(result.usdReceived, 0)} − ${formatNumber(result.dimeUsdFeesTotal, 2)}) USD × ${dimeRate.toFixed(4)} − ${formatNumber(result.dimeFcdFee, 0)} THB = ${formatNumber(result.dimeThb)} THB`
-    : 'Enter a Dime! rate to calculate the final THB.';
+  elements.dimeFormula.textContent = `(${formatNumber(result.usdReceived, 0)} − ${formatNumber(result.dimeUsdFeesTotal, 2)}) USD × ${state.rates.dimeUsdRate.toFixed(2)} − ${formatNumber(result.dimeFcdFee, 0)} THB = ${formatNumber(result.dimeThb)} THB`;
   elements.megaUsdRate.textContent = state.rates.megaUsdSpotSell.toFixed(4);
   elements.usdRate.textContent = state.rates.usdBuying.toFixed(2);
   elements.twdRate.textContent = state.rates.twdBuying.toFixed(3);
+  elements.dimeUsdRate.textContent = state.rates.dimeUsdRate.toFixed(2);
 
-  elements.liveBadge.classList.toggle('offline', !state.isLive);
-  elements.liveBadge.lastChild.textContent = state.isLive ? ' Live market data' : ' Reference rates';
-  const status = state.isLive ? 'Live rates' : 'Last known rates';
+  elements.liveBadge.classList.toggle('offline', !state.isFullyLive);
+  elements.liveBadge.lastChild.textContent = state.isFullyLive
+    ? ' Live market data'
+    : state.isLive ? ' Partial live data' : ' Reference rates';
+  const status = state.isFullyLive ? 'Live rates' : state.isLive ? 'Partially live rates' : 'Last known rates';
   elements.updatedLine.textContent = `${status} · Mega Bank ${state.rates.megaBankUpdatedAt} · SuperRich ${state.rates.branch}`;
 }
 
@@ -196,8 +191,10 @@ async function loadRates() {
     if (!response.ok) throw new Error('Rate request failed');
     state.rates = await response.json();
     state.isLive = true;
+    state.isFullyLive = state.rates.isFullyLive !== false;
   } catch (error) {
     state.isLive = false;
+    state.isFullyLive = false;
   } finally {
     elements.refresh.disabled = false;
     elements.refresh.classList.remove('loading');
@@ -206,7 +203,6 @@ async function loadRates() {
 }
 
 elements.amount.addEventListener('input', render);
-elements.dimeRate.addEventListener('input', render);
 elements.refresh.addEventListener('click', loadRates);
 
 render();
