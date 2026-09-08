@@ -7,7 +7,9 @@ const HOST = process.env.HOST || '0.0.0.0';
 const ROOT = __dirname;
 const SUPER_RICH_URL = 'https://www.superrichthailand.com/';
 const MEGA_BANK_URL = 'https://www.megabank.com.tw/api/client/ExchangeRate/GetRateData?sc_lang=zh-TW&sc_site=bank-zh-tw&dic_lang=zh-TW';
-const DIME_RATE_MULTIPLIER = 1.00061;
+const KKP_RATES_URL = 'https://bank.kkpfg.com/en/exchange-rates';
+const DIME_RATE_MULTIPLIER = 1.00122;
+const KKP_FALLBACK_USD_BUYING = 32.75;
 
 const contentTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -29,7 +31,7 @@ function sendJson(response, statusCode, body) {
 
 async function serveRates(response) {
   try {
-    const [superRichResponse, megaBankResponse] = await Promise.all([
+    const [superRichResponse, megaBankResponse, kkpResult] = await Promise.all([
       fetch(SUPER_RICH_URL, {
         headers: { Accept: 'text/html' },
         signal: AbortSignal.timeout(12000)
@@ -37,7 +39,18 @@ async function serveRates(response) {
       fetch(MEGA_BANK_URL, {
         headers: { Accept: 'application/json' },
         signal: AbortSignal.timeout(12000)
-      })
+      }),
+      fetch(KKP_RATES_URL, {
+        headers: {
+          Accept: 'text/html,application/xhtml+xml',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'User-Agent': 'Mozilla/5.0 (compatible; MoneyExchangeCalculator/1.0)'
+        },
+        signal: AbortSignal.timeout(12000)
+      }).then(async (kkpResponse) => {
+        if (!kkpResponse.ok) throw new Error(`KKP returned ${kkpResponse.status}`);
+        return { html: await kkpResponse.text(), isLive: true };
+      }).catch(() => ({ html: '', isLive: false }))
     ]);
 
     if (!superRichResponse.ok) throw new Error(`SuperRich returned ${superRichResponse.status}`);
@@ -54,7 +67,18 @@ async function serveRates(response) {
     const twdBuying = Number(twdMatch?.[1]);
     const megaUsd = megaBankPayload?.rates?.find((rate) => String(rate.currKey).startsWith('USD|'));
     const megaUsdSpotSell = Number(megaUsd?.spot?.ask);
-    const dimeUsdRate = usdBuying * DIME_RATE_MULTIPLIER;
+    const kkpText = kkpResult.html
+      .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+      .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;|&#160;/gi, ' ')
+      .replace(/\s+/g, ' ');
+    const kkpUsdMatch = kkpText.match(/USD\s+U\.S\. Dollar\s+([0-9]+(?:\.[0-9]+)?)/i);
+    const kkpUpdatedMatch = kkpText.match(/([0-9]{1,2}\s+[A-Za-z]+\s+[0-9]{4})\s+Round\s+([0-9]+)\s*:\s*([0-9:]+\s*[AP]M)/i);
+    const parsedKkpUsdBuying = Number(kkpUsdMatch?.[1]);
+    const kkpIsLive = kkpResult.isLive && Number.isFinite(parsedKkpUsdBuying);
+    const kkpUsdBuying = kkpIsLive ? parsedKkpUsdBuying : KKP_FALLBACK_USD_BUYING;
+    const dimeUsdRate = kkpUsdBuying * DIME_RATE_MULTIPLIER;
 
     if (!Number.isFinite(usdBuying) || !Number.isFinite(twdBuying) || !Number.isFinite(megaUsdSpotSell)) {
       throw new Error('One or more required exchange rates are missing');
@@ -64,10 +88,15 @@ async function serveRates(response) {
       usdBuying,
       twdBuying,
       megaUsdSpotSell,
+      kkpUsdBuying,
       dimeUsdRate,
       superRichUpdatedAt: updatedMatch ? `${updatedMatch[1]} ${updatedMatch[2]}` : 'Current official page',
       megaBankUpdatedAt: megaBankPayload.updateTime,
-      isFullyLive: true,
+      kkpUpdatedAt: kkpUpdatedMatch
+        ? `${kkpUpdatedMatch[1]} · Round ${kkpUpdatedMatch[2]} · ${kkpUpdatedMatch[3]}`
+        : 'Last known reference snapshot',
+      kkpIsLive,
+      isFullyLive: kkpIsLive,
       branch: 'Headquarter Rajdamri 1'
     });
   } catch (error) {

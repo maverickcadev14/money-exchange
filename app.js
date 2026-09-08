@@ -2,9 +2,12 @@ const FALLBACK_RATES = {
   usdBuying: 32.8,
   twdBuying: 1.0,
   megaUsdSpotSell: 31.73,
-  dimeUsdRate: 32.820008,
+  kkpUsdBuying: 32.75,
+  dimeUsdRate: 32.789955,
   superRichUpdatedAt: '2026-08-28T17:57:00+07:00',
   megaBankUpdatedAt: '2026/08/27 17:18:11',
+  kkpUpdatedAt: 'Last known reference snapshot',
+  kkpIsLive: false,
   isFullyLive: false,
   branch: 'Headquarter Rajdamri 1'
 };
@@ -169,13 +172,14 @@ function render() {
     ? ' Live market data'
     : state.isLive ? ' Partial live data' : ' Reference rates';
   const status = state.isFullyLive ? 'Live rates' : state.isLive ? 'Partially live rates' : 'Last known rates';
-  elements.updatedLine.textContent = `${status} · Mega Bank ${state.rates.megaBankUpdatedAt} · SuperRich ${state.rates.branch}`;
+  const kkpStatus = state.rates.kkpIsLive ? state.rates.kkpUpdatedAt : 'reference snapshot';
+  elements.updatedLine.textContent = `${status} · Mega Bank ${state.rates.megaBankUpdatedAt} · SuperRich ${state.rates.branch} · KKP ${kkpStatus}`;
 }
 
 async function loadRates() {
   elements.refresh.disabled = true;
   elements.refresh.classList.add('loading');
-  elements.updatedLine.textContent = 'Refreshing Mega Bank and SuperRich rates…';
+  elements.updatedLine.textContent = 'Refreshing Mega Bank, SuperRich, and KKP rates…';
 
   if (window.location.protocol === 'file:') {
     state.isLive = false;

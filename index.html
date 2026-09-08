@@ -49,7 +49,7 @@
             <div class="input-row"><input id="amountInput" type="number" min="0" step="1" inputmode="numeric" value="0" aria-label="TWD amount to exchange" /><div class="currency-chip">🇹🇼 TWD</div></div>
           </label>
           <div class="rate-summary">
-            <div><span class="status-dot"></span><p><strong>Three exchange routes</strong><small id="updatedLine">Connecting to Mega Bank and SuperRich…</small></p></div>
+            <div><span class="status-dot"></span><p><strong>Three exchange routes</strong><small id="updatedLine">Connecting to Mega Bank, SuperRich, and KKP…</small></p></div>
             <p class="formula-note">All route fees shown separately</p>
           </div>
         </section>
@@ -78,7 +78,7 @@
             <article class="route-card route-dime">
               <div class="route-topline"><span class="route-number">03</span><span class="route-tag">DIME!</span></div>
               <p class="route-path">🇹🇼 TWD <span>→</span> 🇺🇸 USD <span>→</span> 🇹🇭 THB</p>
-              <p class="route-description">Buy USD at Mega Bank, transfer to Dime!, then convert using the SuperRich USD 100-denomination buying rate × 1.00061.</p>
+              <p class="route-description">Buy USD at Mega Bank, transfer to Dime!, then convert using KKP's U.S. Dollar Bank Buying Rate (TT) × 1.00122.</p>
               <div class="step-results dime-step-results">
                 <div class="step-result"><span><b>1</b> USD transferred · rounded to 100</span><p><strong id="dimeUsdReceived">—</strong> <small>USD</small></p></div>
                 <div class="step-result fee-result"><span><b>2</b> Mega Bank transfer fee</span><p><strong id="megaTransferFee">—</strong> <small>USD</small></p></div>
@@ -108,13 +108,13 @@
             <article class="rate-card"><img class="source-icon" src="assets/mega-bank-icon.png" alt="" /><div><p>Mega Bank</p><span>USD · 即期銀行賣出</span></div><strong id="megaUsdRate">—</strong><small>TWD</small></article>
             <article class="rate-card"><img class="source-icon" src="assets/superrich-icon.png" alt="" /><div><p>SuperRich USD</p><span>100 denomination · buying</span></div><strong id="usdRate">—</strong><small>THB</small></article>
             <article class="rate-card"><img class="source-icon" src="assets/superrich-icon.png" alt="" /><div><p>SuperRich TWD</p><span>2,000–100 · buying</span></div><strong id="twdRate">—</strong><small>THB</small></article>
-            <article class="rate-card"><img class="source-icon" src="assets/dime-icon.png" alt="" /><div><p>Dime! FCD USD</p><span>SuperRich USD × 1.00061</span></div><strong id="dimeUsdRate">—</strong><small>THB</small></article>
+            <article class="rate-card"><img class="source-icon" src="assets/dime-icon.png" alt="" /><div><p>Dime! FCD USD</p><span>KKP USD Buying Rate (TT) × 1.00122</span></div><strong id="dimeUsdRate">—</strong><small>THB</small></article>
           </div>
-          <div class="source-links"><a href="https://www.megabank.com.tw/personal/savings/foreign-service/forex" target="_blank" rel="noreferrer">Mega Bank source ↗</a><a href="https://www.superrichthailand.com/#!/en/exchange" target="_blank" rel="noreferrer">SuperRich source ↗</a><a href="https://dime.co.th/en" target="_blank" rel="noreferrer">Dime! source ↗</a></div>
+          <div class="source-links"><a href="https://www.megabank.com.tw/personal/savings/foreign-service/forex" target="_blank" rel="noreferrer">Mega Bank source ↗</a><a href="https://www.superrichthailand.com/#!/en/exchange" target="_blank" rel="noreferrer">SuperRich source ↗</a><a href="https://bank.kkpfg.com/en/exchange-rates" target="_blank" rel="noreferrer">KKP rate source ↗</a><a href="https://dime.co.th/en" target="_blank" rel="noreferrer">Dime! source ↗</a></div>
         </section>
       </main>
 
-      <footer><p>Built for clear, quick currency checks.</p><p>Sources: <a href="https://www.megabank.com.tw/personal/savings/foreign-service/forex" target="_blank" rel="noreferrer">Mega Bank</a>, <a href="https://www.superrichthailand.com/#!/en/exchange" target="_blank" rel="noreferrer">SuperRich Thailand</a> &amp; <a href="https://dime.co.th/en" target="_blank" rel="noreferrer">Dime!</a></p></footer>
+      <footer><p>Built for clear, quick currency checks.</p><p>Sources: <a href="https://www.megabank.com.tw/personal/savings/foreign-service/forex" target="_blank" rel="noreferrer">Mega Bank</a>, <a href="https://www.superrichthailand.com/#!/en/exchange" target="_blank" rel="noreferrer">SuperRich Thailand</a>, <a href="https://bank.kkpfg.com/en/exchange-rates" target="_blank" rel="noreferrer">KKP</a> &amp; <a href="https://dime.co.th/en" target="_blank" rel="noreferrer">Dime!</a></p></footer>
     </div>
     <script src="app.js"></script>
   </body>
