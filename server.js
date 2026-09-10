@@ -8,7 +8,7 @@ const ROOT = __dirname;
 const SUPER_RICH_URL = 'https://www.superrichthailand.com/';
 const MEGA_BANK_URL = 'https://www.megabank.com.tw/api/client/ExchangeRate/GetRateData?sc_lang=zh-TW&sc_site=bank-zh-tw&dic_lang=zh-TW';
 const KKP_RATES_URL = 'https://bank.kkpfg.com/en/exchange-rates';
-const DIME_RATE_MULTIPLIER = 1.00122;
+const DIME_RATE_MULTIPLIER = 1.00244;
 const KKP_FALLBACK_USD_BUYING = 32.75;
 
 const contentTypes = {

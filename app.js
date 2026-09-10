@@ -3,7 +3,7 @@ const FALLBACK_RATES = {
   twdBuying: 1.0,
   megaUsdSpotSell: 31.73,
   kkpUsdBuying: 32.75,
-  dimeUsdRate: 32.789955,
+  dimeUsdRate: 32.82991,
   superRichUpdatedAt: '2026-08-28T17:57:00+07:00',
   megaBankUpdatedAt: '2026/08/27 17:18:11',
   kkpUpdatedAt: 'Last known reference snapshot',
