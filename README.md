@@ -8,7 +8,7 @@ A TWD exchange calculator comparing direct TWD-to-THB exchange, a SuperRich USD 
 npm start
 ```
 
-Open <http://localhost:4173>. The server retrieves the Mega Bank USD spot selling rate, the SuperRich USD 100-denomination and TWD buying rates, and KKP's U.S. Dollar Bank Buying Rate (TT). The two-step route rounds the purchased USD down to the nearest 100 USD before calculating the withdrawal fee and final THB result.
+Open <http://localhost:4173>. The server retrieves the Mega Bank USD spot selling rate and the SuperRich USD 100-denomination and TWD buying rates. The two-step route rounds the purchased USD down to the nearest 100 USD before calculating the withdrawal fee and final THB result.
 
-The Dime! route also rounds USD down to the nearest 100. Its USD-to-THB rate is calculated automatically as KKP's U.S. Dollar Bank Buying Rate (TT) × 1.00244 and is displayed to two decimal places. It deducts a 9.46 USD Mega Bank transfer fee, a Dime! fee of 9 USD below 4,000 USD or 16 USD from 4,000 USD plus an additional 15 USD, and a 500 THB FCD receiving fee.
+The Dime! route also rounds USD down to the nearest 100 and uses the manually entered Dime! FCD USD exchange rate. It deducts a 9.46 USD Mega Bank transfer fee, a Dime! fee of 9 USD below 4,000 USD or 16 USD from 4,000 USD plus an additional 15 USD, and a 500 THB FCD receiving fee.
 Its THB and percentage difference are compared with the option 2 SuperRich USD route.

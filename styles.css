@@ -47,9 +47,13 @@ h2 { margin: 0; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.04em; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .amount-field { display: block; margin: 34px 0; }
 .amount-field > span { display: block; margin-bottom: 9px; color: var(--muted); font-size: 13px; font-weight: 700; }
+.dime-rate-field { display: block; max-width: 650px; margin: -12px 0 34px; }
+.dime-rate-field > span { display: block; margin-bottom: 9px; color: var(--muted); font-size: 13px; font-weight: 700; }
+.dime-rate-field > small { display: block; margin-top: 8px; color: var(--muted); font-size: 11px; }
 .input-row { display: flex; align-items: center; padding: 9px 10px 9px 22px; border: 2px solid var(--ink); border-radius: 14px; background: white; }
 .input-row:focus-within { border-color: var(--green); box-shadow: 0 0 0 4px rgba(16,120,75,.11); }
 .input-row input { min-width: 0; flex: 1; border: 0; outline: 0; color: var(--ink); background: transparent; font: 500 clamp(32px, 5vw, 54px) 'DM Mono', monospace; }
+.rate-input-row input { font-size: clamp(25px, 3.5vw, 38px); }
 .currency-chip { padding: 16px 18px; border-radius: 10px; background: var(--green-soft); color: var(--green-dark); font-weight: 800; }
 .rate-summary { margin: 0 -40px; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; gap: 20px; background: #eef3ef; border-top: 1px solid var(--line); }
 .rate-summary > div { display: flex; align-items: center; gap: 14px; }
