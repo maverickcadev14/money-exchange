@@ -8,6 +8,12 @@
   "theme_color": "#118c4f",
   "icons": [
     {
+      "src": "assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "assets/money-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
