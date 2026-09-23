@@ -1,8 +1,11 @@
-const FIXED_RATES = {
+const FALLBACK_RATES = {
   usdBuying: 33.21,
   twdBuying: 1.02,
   megaUsdSpotSell: 31.74,
-  snapshotDate: '2026-09-22'
+  superRichUpdatedAt: 'Last known rate',
+  megaBankUpdatedAt: 'Last known rate',
+  isFullyLive: false,
+  branch: 'Headquarter Rajdamri 1'
 };
 
 const WITHDRAWAL_BLOCK_USD = 900;
@@ -16,7 +19,9 @@ const DIME_ADDITIONAL_FEE_USD = 15;
 const DIME_FCD_RECEIVING_FEE_THB = 500;
 
 const state = {
-  rates: { ...FIXED_RATES }
+  rates: { ...FALLBACK_RATES },
+  isLive: false,
+  isFullyLive: false
 };
 
 const elements = {
@@ -47,6 +52,7 @@ const elements = {
   usdRate: document.querySelector('#usdRate'),
   twdRate: document.querySelector('#twdRate'),
   dimeUsdRate: document.querySelector('#dimeUsdRate'),
+  refresh: document.querySelector('#refreshButton'),
   liveBadge: document.querySelector('#liveBadge')
 };
 
@@ -169,12 +175,48 @@ function render() {
   elements.twdRate.textContent = state.rates.twdBuying.toFixed(3);
   elements.dimeUsdRate.textContent = dimeRate > 0 ? dimeRate.toFixed(2) : '—';
 
-  elements.liveBadge.classList.add('offline');
-  elements.liveBadge.lastChild.textContent = ' Fixed reference rates';
-  elements.updatedLine.textContent = `Fixed rate snapshot · ${state.rates.snapshotDate}`;
+  elements.liveBadge.classList.toggle('offline', !state.isFullyLive);
+  elements.liveBadge.lastChild.textContent = state.isFullyLive
+    ? ' Live market data'
+    : state.isLive ? ' Partial live data' : ' Last known rates';
+  const status = state.isFullyLive ? 'Live rates' : state.isLive ? 'Partially live rates' : 'Last known rates';
+  elements.updatedLine.textContent = `${status} · Mega Bank ${state.rates.megaBankUpdatedAt} · SuperRich ${state.rates.superRichUpdatedAt}`;
+}
+
+async function loadRates() {
+  elements.refresh.disabled = true;
+  elements.refresh.classList.add('loading');
+  elements.updatedLine.textContent = 'Refreshing Mega Bank and SuperRich rates…';
+
+  if (window.location.protocol === 'file:') {
+    state.isLive = false;
+    state.isFullyLive = false;
+    elements.refresh.disabled = false;
+    elements.refresh.classList.remove('loading');
+    render();
+    elements.updatedLine.textContent = 'Open the hosted website or local server to retrieve live rates';
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/rates', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Rate request failed');
+    state.rates = await response.json();
+    state.isLive = true;
+    state.isFullyLive = state.rates.isFullyLive !== false;
+  } catch (error) {
+    state.isLive = false;
+    state.isFullyLive = false;
+  } finally {
+    elements.refresh.disabled = false;
+    elements.refresh.classList.remove('loading');
+    render();
+  }
 }
 
 elements.amount.addEventListener('input', render);
 elements.dimeRate.addEventListener('input', render);
+elements.refresh.addEventListener('click', loadRates);
 
 render();
+loadRates();

@@ -26,7 +26,7 @@
             <span class="brand-copy"><strong>MONEY EXCHANGE</strong><small>Developed by Maverick</small></span>
           </a>
         </div>
-        <div id="liveBadge" class="live-badge offline"><span></span> Fixed reference rates</div>
+        <div id="liveBadge" class="live-badge offline"><span></span> Connecting to live rates</div>
       </header>
 
       <main>
@@ -39,6 +39,10 @@
         <section class="converter" aria-labelledby="converter-heading">
           <div class="converter-topline">
             <div><p class="section-label">YOUR STARTING AMOUNT</p><h2 id="converter-heading">How much TWD will you exchange?</h2></div>
+            <button id="refreshButton" class="refresh-button" type="button" aria-label="Refresh live exchange rates">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5"/></svg>
+              Refresh rates
+            </button>
           </div>
           <label class="money-field amount-field">
             <span>Taiwan dollar amount</span>
@@ -50,7 +54,7 @@
             <small>Enter how many Thai baht Dime! gives for 1 USD.</small>
           </label>
           <div class="rate-summary">
-            <div><span class="status-dot"></span><p><strong>Three exchange routes</strong><small id="updatedLine">Fixed rate snapshot · 2026-09-22</small></p></div>
+            <div><span class="status-dot"></span><p><strong>Three exchange routes</strong><small id="updatedLine">Connecting to Mega Bank and SuperRich…</small></p></div>
             <p class="formula-note">All route fees shown separately</p>
           </div>
         </section>
