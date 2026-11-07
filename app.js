@@ -53,6 +53,7 @@ const elements = {
   twdRate: document.querySelector('#twdRate'),
   dimeUsdRate: document.querySelector('#dimeUsdRate'),
   refresh: document.querySelector('#refreshButton'),
+  refreshLabel: document.querySelector('#refreshButtonLabel'),
   liveBadge: document.querySelector('#liveBadge')
 };
 
@@ -186,6 +187,8 @@ function render() {
 async function loadRates() {
   elements.refresh.disabled = true;
   elements.refresh.classList.add('loading');
+  elements.refresh.setAttribute('aria-busy', 'true');
+  elements.refreshLabel.textContent = 'Refreshing';
   elements.updatedLine.textContent = 'Refreshing Mega Bank and SuperRich rates…';
 
   if (window.location.protocol === 'file:') {
@@ -193,6 +196,8 @@ async function loadRates() {
     state.isFullyLive = false;
     elements.refresh.disabled = false;
     elements.refresh.classList.remove('loading');
+    elements.refresh.removeAttribute('aria-busy');
+    elements.refreshLabel.textContent = 'Refresh rates';
     render();
     elements.updatedLine.textContent = 'Open the hosted website or local server to retrieve live rates';
     return;
@@ -210,6 +215,8 @@ async function loadRates() {
   } finally {
     elements.refresh.disabled = false;
     elements.refresh.classList.remove('loading');
+    elements.refresh.removeAttribute('aria-busy');
+    elements.refreshLabel.textContent = 'Refresh rates';
     render();
   }
 }
