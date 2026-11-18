@@ -44,6 +44,11 @@ const elements = {
   dimeThbDifference: document.querySelector('#dimeThbDifference'),
   dimePercentageDifference: document.querySelector('#dimePercentageDifference'),
   dimeDifferenceMessage: document.querySelector('#dimeDifferenceMessage'),
+  bestSuggestionTitle: document.querySelector('#bestSuggestionTitle'),
+  bestSuggestionMessage: document.querySelector('#bestSuggestionMessage'),
+  bestSuggestionNote: document.querySelector('#bestSuggestionNote'),
+  bestSuggestionThb: document.querySelector('#bestSuggestionThb'),
+  bestSuggestionDifference: document.querySelector('#bestSuggestionDifference'),
   directFormula: document.querySelector('#directFormula'),
   twoStepFormula: document.querySelector('#twoStepFormula'),
   dimeFormula: document.querySelector('#dimeFormula'),
@@ -129,6 +134,49 @@ function render() {
   elements.dimeFcdFee.textContent = formatNumber(result.dimeFcdFee, 0);
   elements.dimeUsdFeesTotal.textContent = formatNumber(result.dimeUsdFeesTotal, 2);
   elements.dimeThb.textContent = dimeRate > 0 ? formatNumber(result.dimeThb) : '—';
+
+  if (amount <= 0) {
+    elements.bestSuggestionTitle.textContent = 'Enter a TWD amount';
+    elements.bestSuggestionMessage.textContent = 'We’ll compare the available routes and suggest the one that returns the most THB.';
+    elements.bestSuggestionNote.textContent = dimeRate > 0
+      ? 'All three routes are ready to compare.'
+      : 'Enter a Dime! rate to include option 3.';
+    elements.bestSuggestionThb.textContent = '—';
+    elements.bestSuggestionDifference.textContent = 'Waiting for amount';
+  } else {
+    const routes = [
+      { option: 'Option 1', name: 'Direct SuperRich TWD exchange', value: result.directThb },
+      { option: 'Option 2', name: 'Mega Bank ATM USD Cash Withdrawal', value: result.twoStepThb }
+    ];
+
+    if (dimeRate > 0) {
+      routes.push({ option: 'Option 3', name: 'Dime! USD transfer route', value: result.dimeThb });
+    }
+
+    routes.sort((a, b) => b.value - a.value);
+    const bestRoute = routes[0];
+    const secondRoute = routes[1];
+    const tiedRoutes = routes.filter((route) => Math.abs(route.value - bestRoute.value) < 0.005);
+    const advantage = Math.max(0, bestRoute.value - secondRoute.value);
+    const advantagePercentage = secondRoute.value > 0 ? (advantage / secondRoute.value) * 100 : 0;
+
+    if (tiedRoutes.length > 1) {
+      elements.bestSuggestionTitle.textContent = 'Top routes are tied';
+      elements.bestSuggestionMessage.textContent = `${tiedRoutes.map((route) => route.option).join(' and ')} currently return the same THB.`;
+      elements.bestSuggestionDifference.textContent = 'Same estimated return';
+    } else {
+      elements.bestSuggestionTitle.textContent = bestRoute.name;
+      elements.bestSuggestionMessage.textContent = `${bestRoute.option} currently gives you the highest estimated THB return.`;
+      elements.bestSuggestionDifference.textContent = advantage > 0
+        ? `+${formatNumber(advantage)} THB · ${formatNumber(advantagePercentage, 2)}% vs ${secondRoute.option}`
+        : 'Best available result';
+    }
+
+    elements.bestSuggestionNote.textContent = dimeRate > 0
+      ? 'Compared across all three routes, including the entered Dime! rate.'
+      : 'Compared with options 1 and 2. Enter a Dime! rate to include option 3.';
+    elements.bestSuggestionThb.textContent = formatNumber(bestRoute.value);
+  }
 
   const differenceSign = result.thbDifference > 0 ? '+' : result.thbDifference < 0 ? '−' : '';
   const percentageSign = result.percentageDifference > 0 ? '+' : result.percentageDifference < 0 ? '−' : '';
