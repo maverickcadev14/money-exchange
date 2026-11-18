@@ -245,7 +245,7 @@ async function loadRates() {
     elements.refresh.disabled = false;
     elements.refresh.classList.remove('loading');
     elements.refresh.removeAttribute('aria-busy');
-    elements.refreshLabel.textContent = 'Refresh rates';
+    elements.refreshLabel.textContent = 'Refresh';
     render();
     elements.updatedLine.textContent = 'Open the hosted website or local server to retrieve live rates';
     return;
@@ -271,7 +271,7 @@ async function loadRates() {
     elements.refresh.disabled = false;
     elements.refresh.classList.remove('loading');
     elements.refresh.removeAttribute('aria-busy');
-    elements.refreshLabel.textContent = 'Refresh rates';
+    elements.refreshLabel.textContent = 'Refresh';
     render();
   }
 }
