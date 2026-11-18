@@ -21,20 +21,38 @@ const contentTypes = {
 function sendJson(response, statusCode, body) {
   response.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': 'no-store'
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    Pragma: 'no-cache',
+    Expires: '0'
   });
   response.end(JSON.stringify(body));
 }
 
 async function serveRates(response) {
   try {
+    const cacheBuster = Date.now();
+    const superRichUrl = new URL(SUPER_RICH_URL);
+    const megaBankUrl = new URL(MEGA_BANK_URL);
+    superRichUrl.searchParams.set('_refresh', cacheBuster);
+    megaBankUrl.searchParams.set('_refresh', cacheBuster);
+
     const [superRichResponse, megaBankResponse] = await Promise.all([
-      fetch(SUPER_RICH_URL, {
-        headers: { Accept: 'text/html' },
+      fetch(superRichUrl, {
+        cache: 'no-store',
+        headers: {
+          Accept: 'text/html',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache'
+        },
         signal: AbortSignal.timeout(12000)
       }),
-      fetch(MEGA_BANK_URL, {
-        headers: { Accept: 'application/json' },
+      fetch(megaBankUrl, {
+        cache: 'no-store',
+        headers: {
+          Accept: 'application/json',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache'
+        },
         signal: AbortSignal.timeout(12000)
       })
     ]);
@@ -91,7 +109,8 @@ function serveFile(request, response) {
 }
 
 const server = http.createServer((request, response) => {
-  if (request.method === 'GET' && request.url === '/api/rates') {
+  const requestUrl = new URL(request.url, `http://${request.headers.host}`);
+  if (request.method === 'GET' && requestUrl.pathname === '/api/rates') {
     serveRates(response);
     return;
   }

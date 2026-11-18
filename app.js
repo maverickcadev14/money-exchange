@@ -252,7 +252,14 @@ async function loadRates() {
   }
 
   try {
-    const response = await fetch('/api/rates', { cache: 'no-store' });
+    const freshRequestUrl = `/api/rates?refresh=${Date.now()}`;
+    const response = await fetch(freshRequestUrl, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache'
+      }
+    });
     if (!response.ok) throw new Error('Rate request failed');
     state.rates = await response.json();
     state.isLive = true;
@@ -275,3 +282,9 @@ elements.refresh.addEventListener('click', loadRates);
 
 render();
 loadRates();
+
+// Browsers can restore a previously opened page from their back-forward cache.
+// Refresh again in that case so the displayed market rates are never stale.
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) loadRates();
+});
